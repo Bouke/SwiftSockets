@@ -91,7 +91,7 @@ public class PassiveSocket<T: SocketAddress>: Socket<T> {
     return true
   }
   
-  public func listen(queue: dispatch_queue_t, backlog: Int = 5,
+  public func listen(_ queue: dispatch_queue_t, backlog: Int = 5,
                      accept: ( ActiveSocket<T> ) -> Void)
     -> Bool
   {

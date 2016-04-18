@@ -28,7 +28,7 @@ class EchoServer {
     self.port = port
   }
   
-  func log(s: String) {
+  func log(_ s: String) {
     if let lcb = appLog {
       lcb(s)
     }
@@ -94,7 +94,7 @@ class EchoServer {
     "> "
 
 #if swift(>=3.0)
-  func sendWelcome<T: OutputStream>(sockI: T) {
+  func sendWelcome<T: OutputStream>(_ sockI: T) {
     var sock = sockI // cannot use 'var' in parameters anymore?
     // Hm, how to use print(), this doesn't work for me:
     //   print(s, target: sock)
@@ -111,7 +111,7 @@ class EchoServer {
   }
 #endif
   
-  func handleIncomingData<T>(socket: ActiveSocket<T>, expectedCount: Int) {
+  func handleIncomingData<T>(_ socket: ActiveSocket<T>, expectedCount: Int) {
     // remove from openSockets if all has been read
     repeat {
       // FIXME: This currently continues to read garbage if I just close the
@@ -153,7 +153,7 @@ class EchoServer {
     socket.write("> ")
   }
 
-  func logReceivedBlock(block: UnsafePointer<CChar>, length: Int) {
+  func logReceivedBlock(_ block: UnsafePointer<CChar>, length: Int) {
 #if swift(>=3.0)
     let k = String(cString: block)
 #else

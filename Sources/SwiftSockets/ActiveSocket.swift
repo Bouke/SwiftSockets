@@ -278,7 +278,7 @@ public extension ActiveSocket { // writing
     return true
   }
   
-  public func write(data: dispatch_data_t) {
+  public func write(_ data: dispatch_data_t) {
     sendCount += 1
     if debugAsyncWrites { debugPrint("async send[\(data)]") }
     
