@@ -186,7 +186,7 @@ extension Socket { // Socket Options
 
   public var reuseAddress: Bool {
     get { return getSocketOption(SO_REUSEADDR) }
-    set { setSocketOption(SO_REUSEADDR, value: newValue ? 1 : 0) }
+    set { setSocketOption(SO_REUSEADDR, value: newValue) }
   }
 
 #if os(Linux)
@@ -204,15 +204,15 @@ extension Socket { // Socket Options
 
   public var keepAlive: Bool {
     get { return getSocketOption(SO_KEEPALIVE) }
-    set { setSocketOption(SO_KEEPALIVE, value: newValue ? 1 : 0) }
+    set { setSocketOption(SO_KEEPALIVE, value: newValue) }
   }
   public var dontRoute: Bool {
     get { return getSocketOption(SO_DONTROUTE) }
-    set { setSocketOption(SO_DONTROUTE, value: newValue ? 1 : 0) }
+    set { setSocketOption(SO_DONTROUTE, value: newValue) }
   }
   public var socketDebug: Bool {
     get { return getSocketOption(SO_DEBUG) }
-    set { setSocketOption(SO_DEBUG, value: newValue ? 1 : 0) }
+    set { setSocketOption(SO_DEBUG, value: newValue) }
   }
   
   public var sendBufferSize: Int32 {
@@ -262,15 +262,11 @@ extension Socket { // Socket Options
     }
     return buf
   }
-  public func getSocketOption(_ option: Int32) -> Bool {
-    guard let rc : Int32? = getSocketOption(option) else { return false }
-    return rc != 0
-  }
   
-  public func setSocketOption(option: Int32, value: Bool) -> Bool {
+  public func setSocketOption(_ option: Int32, value: Bool) -> Bool {
     return setSocketOption(option, value: value ? 1 : 0)
   }
-  public func getSocketOption(option: Int32) -> Bool {
+  public func getSocketOption(_ option: Int32) -> Bool {
     let v: Int32? = getSocketOption(option)
     return v != nil ? (v! == 0 ? false : true) : false
   }
