@@ -28,7 +28,7 @@ This compiles with the 2016-03-01-a snapshot via Swift Package Manager
 as well as with the Swift 2.2 release using the embedded makefiles.
 Make sure you 
 [install Grand Central Dispatch](http://www.alwaysrightinstitute.com/swift-on-linux-in-vbox-on-osx/)
-into your Swift installation.
+into your Swift installation (for Swift3 you need the experimental branch of GCD!).
 On Linux the included ARIEchoServer/ARIFetch apps do not build, but this one
 does and is embedded:
 [SwiftyEchoDaemon](http://www.alwaysrightinstitute.com/SwiftyEchoDaemon/).
