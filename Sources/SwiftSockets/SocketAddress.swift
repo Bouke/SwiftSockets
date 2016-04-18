@@ -135,7 +135,7 @@ extension sockaddr_in: SocketAddress {
   public init(address: in_addr = INADDR_ANY, port: Int?) {
     self.init()
     
-    sin_port = port != nil ? in_port_t(htons(CUnsignedShort(port!))) : 0
+    sin_port = port != nil ? in_port_t(htons(value: CUnsignedShort(port!))) : 0
     sin_addr = address
   }
   
@@ -186,10 +186,10 @@ extension sockaddr_in: SocketAddress {
   
   public var port: Int { // should we make that optional and use wildcard as nil
     get {
-      return Int(ntohs(sin_port))
+      return Int(ntohs(value: sin_port))
     }
     set {
-      sin_port = in_port_t(htons(CUnsignedShort(newValue)))
+      sin_port = in_port_t(htons(value: CUnsignedShort(newValue)))
     }
   }
   
@@ -274,10 +274,10 @@ extension sockaddr_in6: SocketAddress {
   
   public var port: Int {
     get {
-      return Int(ntohs(sin6_port))
+      return Int(ntohs(value: sin6_port))
     }
     set {
-      sin6_port = in_port_t(htons(CUnsignedShort(newValue)))
+      sin6_port = in_port_t(htons(value: CUnsignedShort(newValue)))
     }
   }
   
@@ -403,7 +403,7 @@ public extension addrinfo {
     
     let aiptr = UnsafePointer<T>(ai_addr) // cast
 #if swift(>=3.0)
-    return aiptr.pointee // copies the address to the return value
+    return aiptr?.pointee // copies the address to the return value
 #else
     return aiptr.memory // copies the address to the return value
 #endif
@@ -415,12 +415,12 @@ public extension addrinfo {
 #if swift(>=3.0)
     if ai_addr.pointee.sa_family == sa_family_t(sockaddr_in.domain) {
       let aiptr = UnsafePointer<sockaddr_in>(ai_addr) // cast
-      return aiptr.pointee // copies the address to the return value
+      return aiptr?.pointee // copies the address to the return value
     }
     
     if ai_addr.pointee.sa_family == sa_family_t(sockaddr_in6.domain) {
       let aiptr = UnsafePointer<sockaddr_in6>(ai_addr) // cast
-      return aiptr.pointee // copies the address to the return value
+      return aiptr?.pointee // copies the address to the return value
     }
 #else // Swift 2.2+
     if ai_addr.memory.sa_family == sa_family_t(sockaddr_in.domain) {

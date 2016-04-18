@@ -238,11 +238,11 @@ public class ActiveSocket<T: SocketAddress>: Socket<T> {
 #if swift(>=3.0) // sigh, #if can't just #if the prefix, need to dupe
 extension ActiveSocket : OutputStream { // writing
   
-  public func write(string: String) {
+  public func write(_ string: String) {
     string.withCString { (cstr: UnsafePointer<Int8>) -> Void in
       let len = Int(strlen(cstr))
       if len > 0 {
-        self.asyncWrite(cstr, length: len)
+        self.asyncWrite(buffer: cstr, length: len)
       }
     }
   }
@@ -327,7 +327,7 @@ public extension ActiveSocket { // writing
     }
 #endif /* os(Darwin) */
     
-    write(asyncData)
+    write(data: asyncData)
     return true
   }
   
@@ -357,7 +357,7 @@ public extension ActiveSocket { // writing
     }
 #endif /* os(Darwin) */
 
-    write(asyncData)
+    write(data: asyncData)
     return true
   }
   
@@ -366,7 +366,7 @@ public extension ActiveSocket { // writing
     let bufsize    = length ?? buffer.count
     
     // this is funky
-    let ( _, writeCount ) = fd.write(buffer, count: bufsize)
+    let ( _, writeCount ) = fd.write(buffer: buffer, count: bufsize)
 
     return writeCount
   }

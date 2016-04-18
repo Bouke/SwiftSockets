@@ -40,18 +40,18 @@ class EchoServer {
   func start() {
     listenSocket = PassiveSocketIPv4(address: sockaddr_in(port: port))
     if listenSocket == nil || !listenSocket! { // neat, eh? ;-)
-      log("ERROR: could not create socket ...")
+      log(s: "ERROR: could not create socket ...")
       return
     }
     
-    log("Listen socket \(listenSocket)")
+    log(s: "Listen socket \(listenSocket)")
     
     let queue = dispatch_get_global_queue(0, 0)
     
     // Note: capturing self here
-    listenSocket!.listen(queue, backlog: 5) { newSock in
+    listenSocket!.listen(queue: queue, backlog: 5) { newSock in
       
-      self.log("got new socket: \(newSock) nio=\(newSock.isNonBlocking)")
+      self.log(s: "got new socket: \(newSock) nio=\(newSock.isNonBlocking)")
       newSock.isNonBlocking = true
       
       dispatch_async(self.lockQueue) {
@@ -59,9 +59,9 @@ class EchoServer {
         self.openSockets[newSock.fd] = newSock
       }
       
-      self.sendWelcome(newSock)
+      self.sendWelcome(sockI: newSock)
       
-      newSock.onRead  { self.handleIncomingData($0, expectedCount: $1) }
+      newSock.onRead  { self.handleIncomingData(socket: $0, expectedCount: $1) }
              .onClose { ( fd: FileDescriptor ) -> Void in
         // we need to consume the return value to give peace to the closure
         dispatch_async(self.lockQueue) { [unowned self] in
@@ -76,7 +76,7 @@ class EchoServer {
       
     }
     
-    log("Started running listen socket \(listenSocket)")
+    log(s: "Started running listen socket \(listenSocket)")
   }
   
   func stop() {
@@ -123,12 +123,12 @@ class EchoServer {
       }
       
       if count < 1 {
-        log("EOF \(socket) (err=\(errno))")
+        log(s: "EOF \(socket) (err=\(errno))")
         socket.close()
         return
       }
       
-      logReceivedBlock(block, length: count)
+      logReceivedBlock(block: block, length: count)
       
       // maps the whole block. asyncWrite does not accept slices,
       // can we add this?
@@ -147,7 +147,7 @@ class EchoServer {
       }
       mblock[count] = 0
       
-      socket.asyncWrite(mblock, length: count)
+      socket.asyncWrite(buffer: mblock, length: count)
     } while (true)
     
     socket.write("> ")
@@ -167,7 +167,7 @@ class EchoServer {
       s = s[s.startIndex..<s.endIndex.predecessor()]
     }
     
-    log("read string: \(s)")
+    log(s: "read string: \(s)")
   }
   
   final let alwaysRight = "Yes, indeed!"

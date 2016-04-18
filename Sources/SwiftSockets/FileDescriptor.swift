@@ -13,12 +13,10 @@ import Darwin
 #endif
 
 
-#if os(Linux) // OSX has this
 #if swift(>=3.0)
 extension POSIXError : ErrorProtocol {}
 #else
 extension POSIXError : ErrorType {}
-#endif
 #endif
 
 /// This essentially wraps the Integer representing a file descriptor in a
@@ -55,7 +53,7 @@ public struct FileDescriptor: IntegerLiteralConvertible, NilLiteralConvertible {
   {
     let fd = sysOpen(path, flags)
     guard fd >= 0 else {
-      return ( POSIXError(rawValue: sysErrno)!, nil )
+      return ( POSIXError(rawValue: sysErrno), nil )
     }
     
     return ( nil, FileDescriptor(fd) )
@@ -179,11 +177,11 @@ extension FileDescriptor { // Socket Flags
   
   public var flags : Int32? {
     get {
-      let rc = ari_fcntlVi(fd, F_GETFL, 0)
+      let rc = ari_fcntlVi(fildes: fd, F_GETFL, 0)
       return rc >= 0 ? rc : nil
     }
     set {
-      let rc = ari_fcntlVi(fd, F_SETFL, Int32(newValue!))
+      let rc = ari_fcntlVi(fildes: fd, F_SETFL, Int32(newValue!))
       if rc == -1 {
         print("Could not set new socket flags \(rc)")
       }
@@ -222,10 +220,10 @@ extension FileDescriptor { // Socket Flags
 
 public extension FileDescriptor {
   
-  public var isDataAvailable: Bool { return pollFlag(POLLRDNORM) }
+  public var isDataAvailable: Bool { return pollFlag(flag: POLLRDNORM) }
   
   public func pollFlag(flag: Int32) -> Bool {
-    let rc: Int32? = poll(flag, timeout: 0)
+    let rc: Int32? = poll(events: flag, timeout: 0)
     if let flags = rc {
       if (flags & flag) != 0 {
         return true
@@ -259,7 +257,7 @@ public extension FileDescriptor {
     }
     
     if debugPoll {
-      let s = pollMaskToString(fds.revents)
+      let s = pollMaskToString(mask16: fds.revents)
       print("Poll result \(rc) flags \(fds.revents)\(s)")
     }
     
@@ -271,7 +269,7 @@ public extension FileDescriptor {
   var numberOfBytesAvailableForReading : Int? {
     // Note: this doesn't seem to work with GCD, returns 0
     var count = Int32(0)
-    let rc    = ari_ioctlVip(fd, sysFIONREAD, &count);
+    let rc    = ari_ioctlVip(fildes: fd, sysFIONREAD, &count);
     print("rc \(rc)")
     return rc != -1 ? Int(count) : nil
   }

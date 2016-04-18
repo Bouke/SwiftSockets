@@ -60,7 +60,7 @@ public class PassiveSocket<T: SocketAddress>: Socket<T> {
     
     if isValid {
       reuseAddress = true
-      if !bind(address) {
+      if !bind(address: address) {
         close()
         return nil
       }
@@ -166,7 +166,7 @@ public class PassiveSocket<T: SocketAddress>: Socket<T> {
     dispatch_resume(listenSource)
 #endif /* os(Darwin) */
     
-    guard listen(backlog) else {
+    guard listen(backlog: backlog) else {
       dispatch_source_cancel(listenSource)
       return false
     }

@@ -117,10 +117,10 @@ public class Socket<T: SocketAddress> {
   }
   
   public func getsockname() -> T? {
-    return _getaname(sysGetsockname)
+    return _getaname(nfn: sysGetsockname)
   }
   public func getpeername() -> T? {
-    return _getaname(sysGetpeername)
+    return _getaname(nfn: sysGetpeername)
   }
   
   typealias GetNameFN = ( Int32, UnsafeMutablePointer<sockaddr>,
@@ -185,8 +185,8 @@ extension Socket { // Socket Flags
 extension Socket { // Socket Options
 
   public var reuseAddress: Bool {
-    get { return getSocketOption(SO_REUSEADDR) }
-    set { setSocketOption(SO_REUSEADDR, value: newValue) }
+    get { return getSocketOption(option: SO_REUSEADDR) }
+    set { setSocketOption(option: SO_REUSEADDR, value: newValue) }
   }
 
 #if os(Linux)
@@ -197,34 +197,34 @@ extension Socket { // Socket Options
   }
 #else
   public var isSigPipeDisabled: Bool {
-    get { return getSocketOption(SO_NOSIGPIPE) }
-    set { setSocketOption(SO_NOSIGPIPE, value: newValue) }
+    get { return getSocketOption(option: SO_NOSIGPIPE) }
+    set { setSocketOption(option: SO_NOSIGPIPE, value: newValue) }
   }
 #endif
 
   public var keepAlive: Bool {
-    get { return getSocketOption(SO_KEEPALIVE) }
-    set { setSocketOption(SO_KEEPALIVE, value: newValue) }
+    get { return getSocketOption(option: SO_KEEPALIVE) }
+    set { setSocketOption(option: SO_KEEPALIVE, value: newValue) }
   }
   public var dontRoute: Bool {
-    get { return getSocketOption(SO_DONTROUTE) }
-    set { setSocketOption(SO_DONTROUTE, value: newValue) }
+    get { return getSocketOption(option: SO_DONTROUTE) }
+    set { setSocketOption(option: SO_DONTROUTE, value: newValue) }
   }
   public var socketDebug: Bool {
-    get { return getSocketOption(SO_DEBUG) }
-    set { setSocketOption(SO_DEBUG, value: newValue) }
+    get { return getSocketOption(option: SO_DEBUG) }
+    set { setSocketOption(option: SO_DEBUG, value: newValue) }
   }
   
   public var sendBufferSize: Int32 {
-    get { return getSocketOption(SO_SNDBUF) ?? -42    }
-    set { setSocketOption(SO_SNDBUF, value: newValue) }
+    get { return getSocketOption(option: SO_SNDBUF) ?? -42    }
+    set { setSocketOption(option: SO_SNDBUF, value: newValue) }
   }
   public var receiveBufferSize: Int32 {
-    get { return getSocketOption(SO_RCVBUF) ?? -42    }
-    set { setSocketOption(SO_RCVBUF, value: newValue) }
+    get { return getSocketOption(option: SO_RCVBUF) ?? -42    }
+    set { setSocketOption(option: SO_RCVBUF, value: newValue) }
   }
   public var socketError: Int32 {
-    return getSocketOption(SO_ERROR) ?? -42
+    return getSocketOption(option: SO_ERROR) ?? -42
   }
   
   /* socket options (TBD: would we use subscripts for such?) */
@@ -264,10 +264,10 @@ extension Socket { // Socket Options
   }
   
   public func setSocketOption(option: Int32, value: Bool) -> Bool {
-    return setSocketOption(option, value: value ? 1 : 0)
+    return setSocketOption(option: option, value: (value ? 1 : 0))
   }
   public func getSocketOption(option: Int32) -> Bool {
-    let v: Int32? = getSocketOption(option)
+    let v: Int32? = getSocketOption(option: option)
     return v != nil ? (v! == 0 ? false : true) : false
   }
   
@@ -278,10 +278,10 @@ extension Socket { // poll()
   
   public var isDataAvailable: Bool { return fd.isDataAvailable }
   
-  public func pollFlag(flag: Int32) -> Bool { return fd.pollFlag(flag) }
+  public func pollFlag(flag: Int32) -> Bool { return fd.pollFlag(flag: flag) }
   
   public func poll(events: Int32, timeout: UInt? = 0) -> Int32? {
-    return fd.poll(events, timeout: timeout)
+    return fd.poll(events: events, timeout: timeout)
   }
   
 }
