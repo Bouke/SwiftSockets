@@ -228,7 +228,7 @@ public extension FileDescriptor {
   
   public var isDataAvailable: Bool { return pollFlag(POLLRDNORM) }
   
-  public func pollFlag(flag: Int32) -> Bool {
+  public func pollFlag(_ flag: Int32) -> Bool {
     let rc: Int32? = poll(flag, timeout: 0)
     if let flags = rc {
       if (flags & flag) != 0 {
