@@ -100,7 +100,7 @@ public func gethostzbyname<T: SocketAddress>
       pairs.append(pair)
     }
 #else
-    for info in ptr!.memory {
+    for info in ptr.memory {
       let pair : hapair = ( info.canonicalName, info.address() )
       pairs.append(pair)
     }
