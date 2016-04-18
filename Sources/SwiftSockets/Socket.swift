@@ -90,7 +90,7 @@ public class Socket<T: SocketAddress> {
   
   /* bind the socket. */
   
-  public func bind(address: T) -> Bool {
+  public func bind(_ address: T) -> Bool {
     guard fd.isValid else { return false }
     
     guard !isBound else {
@@ -125,7 +125,7 @@ public class Socket<T: SocketAddress> {
   
   typealias GetNameFN = ( Int32, UnsafeMutablePointer<sockaddr>,
                           UnsafeMutablePointer<socklen_t>) -> Int32
-  func _getaname(nfn: GetNameFN) -> T? {
+  func _getaname(_ nfn: GetNameFN) -> T? {
     guard fd.isValid else { return nil }
     
     // FIXME: tried to encapsulate this in a sockaddrbuf which does all the
@@ -186,7 +186,7 @@ extension Socket { // Socket Options
 
   public var reuseAddress: Bool {
     get { return getSocketOption(SO_REUSEADDR) }
-    set { setSocketOption(SO_REUSEADDR, value: newValue) }
+    set { setSocketOption(SO_REUSEADDR, value: newValue ? 1 : 0) }
   }
 
 #if os(Linux)
@@ -204,15 +204,15 @@ extension Socket { // Socket Options
 
   public var keepAlive: Bool {
     get { return getSocketOption(SO_KEEPALIVE) }
-    set { setSocketOption(SO_KEEPALIVE, value: newValue) }
+    set { setSocketOption(SO_KEEPALIVE, value: newValue ? 1 : 0) }
   }
   public var dontRoute: Bool {
     get { return getSocketOption(SO_DONTROUTE) }
-    set { setSocketOption(SO_DONTROUTE, value: newValue) }
+    set { setSocketOption(SO_DONTROUTE, value: newValue ? 1 : 0) }
   }
   public var socketDebug: Bool {
     get { return getSocketOption(SO_DEBUG) }
-    set { setSocketOption(SO_DEBUG, value: newValue) }
+    set { setSocketOption(SO_DEBUG, value: newValue ? 1 : 0) }
   }
   
   public var sendBufferSize: Int32 {
@@ -230,7 +230,7 @@ extension Socket { // Socket Options
   /* socket options (TBD: would we use subscripts for such?) */
   
   
-  public func setSocketOption(option: Int32, value: Int32) -> Bool {
+  public func setSocketOption(_ option: Int32, value: Int32) -> Bool {
     if !isValid {
       return false
     }
@@ -247,7 +247,7 @@ extension Socket { // Socket Options
   
   // TBD: Can't overload optionals in a useful way?
   // func getSocketOption(option: Int32) -> Int32
-  public func getSocketOption(option: Int32) -> Int32? {
+  public func getSocketOption(_ option: Int32) -> Int32? {
     if !isValid {
       return nil
     }
@@ -261,6 +261,10 @@ extension Socket { // Socket Options
       return nil
     }
     return buf
+  }
+  public func getSocketOption(_ option: Int32) -> Bool {
+    guard let rc : Int32? = getSocketOption(option) else { return false }
+    return rc != 0
   }
   
   public func setSocketOption(option: Int32, value: Bool) -> Bool {

@@ -60,7 +60,7 @@ public class PassiveSocket<T: SocketAddress>: Socket<T> {
     
     if isValid {
       reuseAddress = true
-      if !xsys.bind(address) {
+      if !bind(address) {
         close()
         return nil
       }
@@ -79,7 +79,7 @@ public class PassiveSocket<T: SocketAddress>: Socket<T> {
   
   /* start listening */
   
-  public func listen(backlog: Int = 5) -> Bool {
+  public func listen(_ backlog: Int = 5) -> Bool {
     guard isValid      else { return false }
     guard !isListening else { return true }
     

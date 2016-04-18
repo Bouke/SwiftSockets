@@ -248,7 +248,7 @@ public extension FileDescriptor {
   // Swift doesn't allow let's in here?!
   var debugPoll : Bool { return false }
   
-  public func poll(events: Int32, timeout: UInt? = 0) -> Int32? {
+  public func poll(_ events: Int32, timeout: UInt? = 0) -> Int32? {
     // This is declared as Int32 because the POLLRDNORM and such are
     guard isValid else { return nil }
     
@@ -281,7 +281,7 @@ public extension FileDescriptor {
   }
 }
 
-private func pollMaskToString(mask16: Int16) -> String {
+private func pollMaskToString(_ mask16: Int16) -> String {
   var s = ""
   let mask = Int32(mask16)
   if 0 != (mask & POLLIN)     { s += " IN"  }
