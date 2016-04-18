@@ -35,10 +35,10 @@ public func gethoztbyname<T: SocketAddress>
   /* copy results - we just take the first match */
   var cn   : String? = nil
 #if swift(>=3.0)
-  var addr : T?      = ptr.pointee.address()
+  var addr : T?      = ptr?.pointee.address()
   if rc == 0 && ptr != nil {
-    cn   = ptr.pointee.canonicalName
-    addr = ptr.pointee.address()
+    cn   = ptr!.pointee.canonicalName
+    addr = ptr!.pointee.address()
   }
 #else
   var addr : T?      = ptr.memory.address()
@@ -95,12 +95,12 @@ public func gethostzbyname<T: SocketAddress>
   if rc == 0 && ptr != nil {
     var pairs = Array<hapair>()
 #if swift(>=3.0)
-    for info in ptr.pointee {
+    for info in ptr!.pointee {
       let pair : hapair = ( info.canonicalName, info.address() )
       pairs.append(pair)
     }
 #else
-    for info in ptr.memory {
+    for info in ptr!.memory {
       let pair : hapair = ( info.canonicalName, info.address() )
       pairs.append(pair)
     }

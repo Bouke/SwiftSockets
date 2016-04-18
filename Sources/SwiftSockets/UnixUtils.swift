@@ -17,11 +17,15 @@ import Darwin
 
 // MARK: - network utility functions
 
+#if os(Linux)
+// Swift3 2016-04-12 has ntohs in SwiftGlibc
+#else
 func ntohs(value: CUnsignedShort) -> CUnsignedShort {
   // hm, htons is not a func in OSX and the macro is not mapped
   return (value << 8) + (value >> 8);
 }
 let htons = ntohs // same thing, swap bytes :-)
+#endif
 
 
 

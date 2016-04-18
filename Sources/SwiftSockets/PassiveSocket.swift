@@ -60,7 +60,7 @@ public class PassiveSocket<T: SocketAddress>: Socket<T> {
     
     if isValid {
       reuseAddress = true
-      if !bind(address) {
+      if !xsys.bind(address) {
         close()
         return nil
       }
