@@ -403,7 +403,7 @@ public extension addrinfo {
     
     let aiptr = UnsafePointer<T>(ai_addr) // cast
 #if swift(>=3.0)
-    return aiptr.pointee // copies the address to the return value
+    return aiptr!.pointee // copies the address to the return value
 #else
     return aiptr.memory // copies the address to the return value
 #endif
@@ -415,12 +415,12 @@ public extension addrinfo {
 #if swift(>=3.0)
     if ai_addr.pointee.sa_family == sa_family_t(sockaddr_in.domain) {
       let aiptr = UnsafePointer<sockaddr_in>(ai_addr) // cast
-      return aiptr.pointee // copies the address to the return value
+      return aiptr!.pointee // copies the address to the return value
     }
     
     if ai_addr.pointee.sa_family == sa_family_t(sockaddr_in6.domain) {
       let aiptr = UnsafePointer<sockaddr_in6>(ai_addr) // cast
-      return aiptr.pointee // copies the address to the return value
+      return aiptr!.pointee // copies the address to the return value
     }
 #else // Swift 2.2+
     if ai_addr.memory.sa_family == sa_family_t(sockaddr_in.domain) {
