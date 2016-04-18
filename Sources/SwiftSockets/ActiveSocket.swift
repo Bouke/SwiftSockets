@@ -238,7 +238,7 @@ public class ActiveSocket<T: SocketAddress>: Socket<T> {
 #if swift(>=3.0) // sigh, #if can't just #if the prefix, need to dupe
 extension ActiveSocket : OutputStream { // writing
   
-  public func write(string: String) {
+  public func write(_ string: String) {
     string.withCString { (cstr: UnsafePointer<Int8>) -> Void in
       let len = Int(strlen(cstr))
       if len > 0 {
@@ -301,7 +301,7 @@ public extension ActiveSocket { // writing
     
   }
   
-  public func asyncWrite<T>(buffer: [T]) -> Bool {
+  public func asyncWrite<T>(_ buffer: [T]) -> Bool {
     // While [T] seems to convert to ConstUnsafePointer<T>, this method
     // has the added benefit of being able to derive the buffer length
     guard canWrite else { return false }
@@ -331,7 +331,7 @@ public extension ActiveSocket { // writing
     return true
   }
   
-  public func asyncWrite<T>(buffer: UnsafePointer<T>, length:Int) -> Bool {
+  public func asyncWrite<T>(_ buffer: UnsafePointer<T>, length:Int) -> Bool {
     // FIXME: can we remove this dupe of the [T] version?
     guard canWrite else { return false }
     

@@ -116,7 +116,7 @@ public struct FileDescriptor: IntegerLiteralConvertible, NilLiteralConvertible {
 #endif
   
 #if swift(>=3.0) // sigh, need to dupe whole function in #if
-  public func write<T>(buffer: [ T ], count: Int = -1)
+  public func write<T>(_ buffer: [ T ], count: Int = -1)
                 -> ( ErrorProtocol?, Int )
   {
     guard buffer.count > 0 else { return ( nil, 0 ) }
